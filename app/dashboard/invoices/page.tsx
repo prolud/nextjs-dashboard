@@ -15,10 +15,10 @@ interface SearchParamsProps {
 interface InvoicesProps {
   searchParams?: Promise<SearchParamsProps>
 }
-export default async function Page(props: InvoicesProps) {
+export default async function Page(props: Readonly<InvoicesProps>) {
   const searchParams = await props.searchParams
-  const query = searchParams?.invoicesSearch || ''
-  const currentPage = Number(searchParams?.page || 1)
+  const query = searchParams?.invoicesSearch ?? ''
+  const currentPage = Number(searchParams?.page ?? 1)
   const totalPages = await fetchInvoicesPages(query)
 
   return (

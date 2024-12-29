@@ -1,7 +1,10 @@
 import SideNav from 'app/ui/dashboard/sidenav';
 export const experimental_ppr = true;
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+interface LayoutProps {
+  readonly children: React.ReactNode
+}
+export default function Layout({ children }: LayoutProps) {
   return (
     <div className='flex h-screen md:flex-row md:overflow-hidden'>
 
