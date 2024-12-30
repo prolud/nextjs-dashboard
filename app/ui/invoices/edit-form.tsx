@@ -17,7 +17,6 @@ interface EditInvoiceFormProps {
 }
 export default function EditInvoiceForm({ invoice, customers }: EditInvoiceFormProps) {
   const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
-  console.log(updateInvoiceWithId)
   
   return (
     <form action={updateInvoiceWithId}>
