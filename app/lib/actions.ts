@@ -33,7 +33,7 @@ export async function createInvoice(formData: FormData) {
     `;
   }
   catch (error) {
-    return { message: 'An error occurred while creating invoice.' }
+    return console.error('An error occurred while creating invoice.')
   }
 
   revalidatePath('/dashboard/invoices');

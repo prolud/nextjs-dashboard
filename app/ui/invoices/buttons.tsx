@@ -26,8 +26,15 @@ export function UpdateInvoice({ id }: { readonly id: string }) {
 }
 
 export function DeleteInvoice({ id }: { readonly id: string }) {
-  const deleteInvoiceWithId = deleteInvoice.bind(null, id);
-  
+  const deleteInvoiceWithId = async (formData: FormData) => {
+    try {
+      deleteInvoice.bind(null, id);
+    }
+    catch(error) {
+      console.error("An error occured while deleting invoice:", error)
+    }
+  }
+
   return (
     <form action={deleteInvoiceWithId}>
       <button className="rounded-md border p-2 hover:bg-gray-100">
