@@ -9,17 +9,22 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
-import { updateInvoice } from '@/app/lib/actions';
+import { State, updateInvoice } from '@/app/lib/actions';
+import { useActionState } from 'react';
 
 interface EditInvoiceFormProps {
   readonly invoice: InvoiceForm;
   readonly customers: CustomerField[];
 }
 export default function EditInvoiceForm({ invoice, customers }: EditInvoiceFormProps) {
+  const initialState: State = { message: null, errors: {} };
   const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
-  
+
+  const [state, formAction] = useActionState(updateInvoiceWithId, initialState);
+
   return (
-    <form action={updateInvoiceWithId}>
+    <form action={formAction}>
+
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
@@ -32,6 +37,7 @@ export default function EditInvoiceForm({ invoice, customers }: EditInvoiceFormP
               name="customerId"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               defaultValue={invoice.customer_id}
+              aria-describedby='customer-error'
             >
               <option value="" disabled>
                 Select a customer
@@ -44,6 +50,18 @@ export default function EditInvoiceForm({ invoice, customers }: EditInvoiceFormP
             </select>
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
+
+          <div id="customer-error" aria-live="polite" aria-atomic="true">
+            {
+              state.errors?.customerId?.map(
+                (error: string) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                )
+              )
+            }
+          </div>
         </div>
 
         {/* Invoice Amount */}
@@ -51,7 +69,7 @@ export default function EditInvoiceForm({ invoice, customers }: EditInvoiceFormP
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Choose an amount
           </label>
-          <div className="relative mt-2 rounded-md">
+          <div className="relative mt-2 rounded-md" aria-describedby='invoice-error'>
             <div className="relative">
               <input
                 id="amount"
@@ -64,6 +82,18 @@ export default function EditInvoiceForm({ invoice, customers }: EditInvoiceFormP
               />
               <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
+
+            <div id="invoice-error" aria-live="polite" aria-atomic="true">
+              {
+                state.errors?.amount?.map(
+                  (error: string) => (
+                    <p className="mt-2 text-sm text-red-500" key={error}>
+                      {error}
+                    </p>
+                  )
+                )
+              }
+            </div>
           </div>
         </div>
 
@@ -72,7 +102,7 @@ export default function EditInvoiceForm({ invoice, customers }: EditInvoiceFormP
           <legend className="mb-2 block text-sm font-medium">
             Set the invoice status
           </legend>
-          <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
+          <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3" aria-describedby='status-error'>
             <div className="flex gap-4">
               <div className="flex items-center">
                 <input
@@ -108,8 +138,21 @@ export default function EditInvoiceForm({ invoice, customers }: EditInvoiceFormP
               </div>
             </div>
           </div>
+
+          <div id="status-error" aria-live="polite" aria-atomic="true">
+            {
+              state.errors?.status?.map(
+                (error: string) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                )
+              )
+            }
+          </div>
         </fieldset>
       </div>
+
       <div className="mt-6 flex justify-end gap-4">
         <Link
           href="/dashboard/invoices"
@@ -119,6 +162,7 @@ export default function EditInvoiceForm({ invoice, customers }: EditInvoiceFormP
         </Link>
         <Button type="submit">Edit Invoice</Button>
       </div>
+
     </form>
   );
 }
